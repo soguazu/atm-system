@@ -1,0 +1,560 @@
+---
+swagger: "2.0"
+info:
+  description: "This specification is for simulation of an Automated Teller      \
+    \        Machine"
+  version: "1.0.0"
+  title: "Automated Teller Machine API"
+  contact:
+    email: "info@queuehive.com"
+  license:
+    name: "MIT"
+host: "localhost:3000"
+basePath: "/v1"
+tags:
+- name: "bank"
+  description: "Everything about your Banks"
+- name: "customer"
+  description: "Access to all account owners in a bank"
+- name: "atm"
+  description: "issued atms"
+schemes:
+- "http"
+paths:
+  /banks:
+    get:
+      tags:
+      - "bank"
+      summary: "Returns all bank"
+      description: "A query that returns all created bank"
+      operationId: "findBanks"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Banks"
+        404:
+          description: "Bank not found"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Bank"
+    post:
+      tags:
+      - "bank"
+      summary: "Add a new bank"
+      description: ""
+      operationId: "addBank"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "name"
+        description: "Bank object that needs to be added to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/Bank"
+      responses:
+        200:
+          description: "Created Bank"
+          schema:
+            $ref: "#/definitions/Bank"
+        400:
+          description: "Invalid input"
+      x-swagger-router-controller: "Bank"
+  /banks/{id}:
+    get:
+      tags:
+      - "bank"
+      summary: "Finds Bank by id"
+      description: "A query that finds a specific bank by id"
+      operationId: "findBankById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id values that need to be considered for filter"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Bank"
+        400:
+          description: "Invalid status value"
+      x-swagger-router-controller: "Bank"
+    put:
+      tags:
+      - "bank"
+      summary: "Update an existing bank"
+      description: "A query updates bank information"
+      operationId: "updateBank"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Bank object that needs to be added to the database"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/Bank"
+      responses:
+        200:
+          description: "Updated successfully"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Bank not found"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Bank"
+    delete:
+      tags:
+      - "bank"
+      summary: "Delete a bank by id"
+      description: "A query that delete a bank by given id"
+      operationId: "deleteBankById"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "unique id given to every bank"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Deleted successfully"
+        404:
+          description: "Bank not found"
+        503:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Bank"
+  /customers:
+    get:
+      tags:
+      - "customer"
+      summary: "Returns all customers"
+      description: "A query that returns all customers"
+      operationId: "getCustomers"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Operation successful"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Customers"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Customer"
+    post:
+      tags:
+      - "customer"
+      summary: "Create account"
+      description: "This can only be done by the logged in user."
+      operationId: "createUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created customer object"
+        required: true
+        schema:
+          $ref: "#/definitions/Bank"
+      responses:
+        200:
+          description: "Customer created successfully"
+        400:
+          description: "Invalid input"
+      x-swagger-router-controller: "Customer"
+  /customers/{id}:
+    get:
+      tags:
+      - "customer"
+      summary: "Get a specific customer"
+      description: "A query that returns a customer by id"
+      operationId: "getCustomerById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "unique id for customers"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Operation successful"
+          schema:
+            $ref: "#/definitions/Customer"
+        404:
+          description: "Customer not found"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Customer"
+    put:
+      tags:
+      - "customer"
+      summary: "Update an existing customer"
+      description: "A query updates customer information"
+      operationId: "updateCustomer"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Bank object that needs to be added to the database"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated customer object"
+        required: true
+        schema:
+          $ref: "#/definitions/Customer"
+      responses:
+        200:
+          description: "Updated successfully"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Bank not found"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Customer"
+    delete:
+      tags:
+      - "customer"
+      summary: "Delete a customer by id"
+      description: "A query that delete a customer by given id"
+      operationId: "deleteCustmerById"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "unique id given to every customer"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Deleted successfully"
+        404:
+          description: "Bank not found"
+        503:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Customer"
+  /customers/name:
+    get:
+      tags:
+      - "customer"
+      summary: "Get a specific customer by name"
+      description: "A query that returns a customer by name"
+      operationId: "getCustomerByName"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "query"
+        description: "A query that gets customers by name"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Operation Successful"
+          schema:
+            $ref: "#/definitions/Customer"
+        404:
+          description: "Customer not found"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Customer"
+  /customers/bankId:
+    get:
+      tags:
+      - "customer"
+      summary: "Get all customers in a specific bank"
+      description: "A query that returns all customer by bank"
+      operationId: "getCustomerByBank"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bankId"
+        in: "query"
+        description: "A query that gets all customers by bank"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Operation Successful"
+          schema:
+            $ref: "#/definitions/Customers"
+        404:
+          description: "Bank not found"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Customer"
+  /atm:
+    get:
+      tags:
+      - "atm"
+      summary: "Returns all atm"
+      description: "A query that returns all atm"
+      operationId: "getATM"
+      parameters: []
+      responses:
+        200:
+          description: "Operation successful"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ATMs"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Atm"
+    post:
+      tags:
+      - "atm"
+      summary: "Create atm"
+      description: "This can only be done by the logged in user."
+      operationId: "createATM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created atm object"
+        required: true
+        schema:
+          $ref: "#/definitions/ATM"
+      responses:
+        200:
+          description: "atm created successfully"
+        400:
+          description: "Invalid input"
+      x-swagger-router-controller: "Atm"
+  /atm/{id}:
+    get:
+      tags:
+      - "atm"
+      summary: "Get a specific atm"
+      description: "A query that returns an atm by id"
+      operationId: "getATMById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "unique id for customers"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Operation successful"
+          schema:
+            $ref: "#/definitions/ATM"
+        404:
+          description: "Atm not found"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Atm"
+    put:
+      tags:
+      - "atm"
+      summary: "Update an existing atm"
+      description: "A query updates an atm information"
+      operationId: "updateATM"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ATM object that needs to be added to the database"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "status"
+        description: "Updated atm object"
+        required: true
+        schema:
+          $ref: "#/definitions/ATM"
+      responses:
+        200:
+          description: "Updated successfully"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Customer not found"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Atm"
+  /atm/{id}/withdraw:
+    get:
+      tags:
+      - "atm"
+      summary: "Withdraw cash"
+      description: "A query that withdraws money from account"
+      operationId: "withdrawMoney"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "unique id for atm"
+        required: true
+        type: "string"
+      - name: "withdrawAmount"
+        in: "query"
+        description: "amount to withdraw"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "withdrawal successful"
+        404:
+          description: "Atm not found"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Atm"
+  /atm/{id}/deposit:
+    get:
+      tags:
+      - "atm"
+      summary: "Withdraw cash"
+      description: "A query that withdraws money from account"
+      operationId: "depositMoney"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "unique id for atm"
+        required: true
+        type: "string"
+      - name: "depositAmount"
+        in: "query"
+        description: "amount to deposit"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "deposit successful"
+        404:
+          description: "Atm not found"
+        500:
+          description: "Something went wrong try again"
+      x-swagger-router-controller: "Atm"
+definitions:
+  Bank:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      customerId:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+    example:
+      customerId: 6
+      name: "name"
+      id: 0
+  Banks:
+    type: "array"
+    items:
+      $ref: "#/definitions/Bank"
+  Customer:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      bankId:
+        type: "integer"
+        format: "int64"
+      account:
+        type: "string"
+        enum:
+        - "fixed"
+        - "saving"
+        - "current"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      email:
+        type: "string"
+      phone:
+        type: "string"
+      accountBalance:
+        type: "integer"
+    example:
+      firstName: "firstName"
+      lastName: "lastName"
+      bankId: 6
+      phone: "phone"
+      id: 0
+      accountBalance: 1
+      account: "fixed"
+      email: "email"
+  Customers:
+    type: "array"
+    items:
+      $ref: "#/definitions/Customer"
+  ATM:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      customerId:
+        type: "integer"
+        format: "int64"
+      cardNo:
+        type: "string"
+      passcode:
+        type: "string"
+      createdAt:
+        type: "string"
+      ExpiryOn:
+        type: "string"
+      status:
+        type: "string"
+        default: "active"
+    example:
+      createdAt: "createdAt"
+      customerId: 6
+      ExpiryOn: "ExpiryOn"
+      id: 0
+      cardNo: "cardNo"
+      passcode: "passcode"
+      status: "active"
+  ATMs:
+    type: "array"
+    items:
+      $ref: "#/definitions/ATM"
